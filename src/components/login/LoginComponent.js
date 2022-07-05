@@ -64,7 +64,7 @@ const LoginComponent = () => {
       user = userCredential?.user;
       let loggedUser;
 
-      const userDbRef = collection(firebaseDB, "users");
+      const userDbRef = collection(firebaseDB, "members");
       const q = query(userDbRef, where("id", "==", user.uid));
       const userQuerySnapshot = await getDocs(q);
 
@@ -169,8 +169,10 @@ const LoginComponent = () => {
 
           <Grid item xs={12}>
             <p className={classes.signupText}>
-              Dont have an account?{" "}
-              <span onClick={() => history.push("/register")}>
+              Create an admin account?&nbsp;
+              <span
+              // onClick={() => history.push("/register")}
+              >
                 Sign up here
               </span>
             </p>

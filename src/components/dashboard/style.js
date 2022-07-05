@@ -6,8 +6,9 @@ export const useStyles = makeStyles((theme) => {
     titleHeading: {
       fontSize: "1.6rem !important",
       fontWeight: "bolder !important",
-      margin: "25px 0 10px 0 !important",
-      width: "80%",
+      margin: "15px 0 10px 10px !important",
+      // width: "80%",
+      // textAlign: "left",
       textTransform: "capitalize",
     },
 

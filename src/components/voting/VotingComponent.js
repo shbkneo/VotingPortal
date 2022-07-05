@@ -51,17 +51,19 @@ const VotingComponent = () => {
       let findCurrentUserIndex = results.findIndex((el, i) => {
         return userData?.uid === el.userId;
       });
-      console.log(results, findCurrentUserIndex);
+      // console.log(results, findCurrentUserIndex);
       if (findCurrentUserIndex === -1) {
         const response = {
           date: moment().format(),
           email: userData?.email,
-          userName: userData?.name || "testing",
+          userName: userData?.name || "abc",
           votedFor: selectedCandidate,
           reason,
           userId: userData?.uid,
+          team_id: userData?.team_id,
+          team_lead: userData?.team_lead,
         };
-        console.log(response);
+        // console.log(response);
 
         const resultDocs = await doc(resultDBref);
         const docRef = await setDoc(resultDocs, {
@@ -84,12 +86,17 @@ const VotingComponent = () => {
   };
   const loadCandidateNames = async () => {
     let temp = [];
-    const candidatesDBref = collection(firebaseDB, "candidates");
+    const candidatesDBref = collection(firebaseDB, "members");
     const userQuerySnapshot = await getDocs(candidatesDBref);
     userQuerySnapshot.forEach((doc) => {
       temp.push(doc.data());
     });
-    setCandidateNames(temp);
+
+    setCandidateNames(
+      temp.filter(
+        (el, i) => el?.team_id == userData?.team_id && el.admin === false
+      )
+    );
   };
   const closeModalHandler = () => {
     setOpenModal(false);
@@ -99,7 +106,7 @@ const VotingComponent = () => {
 
   return (
     <Container className={classes.loginContainer} maxWidth="sm" fixed>
-      <Paper className={classes.loginPaper} elevation={4}>
+      <Paper className={classes.loginPaper} elevation={1}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <p className={classes.loginHeading}>Lets Vote</p>

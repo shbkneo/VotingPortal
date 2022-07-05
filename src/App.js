@@ -30,7 +30,7 @@ const App = () => {
     const userid = localStorage.getItem("userid");
     if (token) {
       let user;
-      const userDbRef = collection(firebaseDB, "users");
+      const userDbRef = collection(firebaseDB, "members");
       const q = query(userDbRef, where("id", "==", userid));
       const userQuerySnapshot = await getDocs(q);
 
@@ -50,6 +50,9 @@ const App = () => {
           <Route exact path="/">
             {!login ? <Redirect to="/login" /> : <Redirect to="/voting" />}
           </Route>
+          {!login && <Redirect from="/dashboard" to="/login" />}
+          {!login && <Redirect from="/voting" to="/login" />}
+          {!login && <Redirect from="/admin-panel" to="/login" />}
           {!login && (
             <Route exact path={"/login"}>
               <LoginComponent />
@@ -76,27 +79,27 @@ const App = () => {
             </Route>
           )}
           {login && (
-            <Route exact path={"/results"}>
+            <Route exact path={"/admin-panel/poll-results"}>
               <Results />
             </Route>
           )}
           {login && (
-            <Route exact path={"/users"}>
+            <Route exact path={"/admin-panel/users"}>
               <UsersComponent />
             </Route>
           )}
           {login && (
-            <Route exact path={"/candidates"}>
+            <Route exact path={"/admin-panel/my-teams"}>
               <Candidates />
             </Route>
           )}
-          {!login && (
+          {/* {!login && (
             <Route exact path={"/register"}>
               <Suspense fallback={<div>loading task management</div>}>
                 <RegisterComponent />
               </Suspense>
             </Route>
-          )}
+          )} */}
         </Switch>
       ) : null}
     </LayoutComponent>

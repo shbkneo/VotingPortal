@@ -1,17 +1,22 @@
 import { Grid, Typography } from "@mui/material";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import Tiles from "../../common/Tiles";
+import Tiles from "./Tiles";
 import { firebaseDB } from "../../services/firebase/FirebaseConfig";
 import DialogComponent from "./DialogComponent";
 import { useStyles } from "./style";
 import moment from "moment";
+import { useSelector } from "react-redux";
+import { Images } from "../../utils/Images";
 
 const Results = () => {
   const classes = useStyles();
+  const { userData } = useSelector((state) => state);
+
   const [candidates, setCandidates] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogData, setDialogData] = useState({});
+  const [fridayDate, setFridayDate] = useState();
 
   useEffect(() => {
     loadResults();
@@ -22,11 +27,14 @@ const Results = () => {
     lastFriday.setDate(t);
 
     let allCandidateNames = [];
-    const candidatesDBref = collection(firebaseDB, "candidates");
+    const candidatesDBref = collection(firebaseDB, "members");
     const userQuerySnapshotx = await getDocs(candidatesDBref);
     userQuerySnapshotx.forEach((doc) => {
       allCandidateNames.push(doc.data());
     });
+    allCandidateNames = allCandidateNames.filter(
+      (el, i) => el.team_id === userData?.team_id && el.admin == false
+    );
     let results = [];
     const resultDBref = collection(firebaseDB, "results");
     const userQuerySnapshot = await getDocs(resultDBref);
@@ -44,6 +52,7 @@ const Results = () => {
           moment(new Date()).format("DD-MM-YYYY")
         );
       });
+      setFridayDate(moment(new Date()).format("DD-MM-YYYY"));
     } else {
       results = results.filter((el, i) => {
         return (
@@ -51,9 +60,10 @@ const Results = () => {
           moment(lastFriday).format("DD-MM-YYYY")
         );
       });
+      setFridayDate(moment(lastFriday).format("DD-MM-YYYY"));
     }
     let temp = allCandidateNames.map((el, i) => {
-      return { name: el?.name, count: 0, comments: [] };
+      return { ...el, count: 0, comments: [] };
     });
     for (let i of allCandidateNames) {
       for (let j in results) {
@@ -81,34 +91,81 @@ const Results = () => {
     setDialogData({});
     setOpenDialog(false);
   };
+  const makeChampionHandler = async (data) => {
+    const championsDBRef = collection(firebaseDB, "champions");
+    try {
+      const docs = await doc(championsDBRef);
+      const docRef = await setDoc(docs, {
+        ...data,
+        id: docs.id,
+        champion_date: moment(new Date()).format(),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Grid container>
-      <Grid item xs={12}>
-        <Typography className={classes.titleHeading}>Poll Results</Typography>
-        <Typography align="center" marginTop={"-15px"} marginBottom={"25px"}>
-          {moment(new Date()).format("dddd") === "Friday"
-            ? "(Today)"
-            : "(Last Friday)"}
-        </Typography>
-      </Grid>
-
-      {candidates.map((el, i) => (
+      {!userData?.admin ? (
         <Grid
           item
-          key={i}
-          xs={6}
-          sm={4}
-          md={3}
-          style={{ display: "flex", justifyContent: "space-evenly" }}
+          xs={12}
+          style={{ display: "flex", justifyContent: "center", marginTop: 20 }}
         >
-          <Tiles key={i} data={el} onClickTiles={onClickTiles} />
+          <div>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <img
+                alt=""
+                src={Images.denied}
+                style={{ height: 80, width: 80 }}
+              ></img>
+            </div>
+
+            <h3>You don't have access to this panel !</h3>
+          </div>
         </Grid>
-      ))}
-      <DialogComponent
-        open={openDialog}
-        data={dialogData}
-        close={closeDialog}
-      />
+      ) : (
+        <>
+          <Grid item xs={12}>
+            <Typography className={classes.titleHeading}>
+              Poll Results
+            </Typography>
+            <Typography
+              align="center"
+              marginTop={"-15px"}
+              marginBottom={"25px"}
+            >
+              {moment(new Date()).format("dddd") === "Friday"
+                ? "(Today)"
+                : "(Last Friday)"}
+              {fridayDate}
+            </Typography>
+          </Grid>
+          {candidates.map((el, i) => (
+            <Grid
+              item
+              key={i}
+              xs={6}
+              sm={4}
+              md={3}
+              style={{ display: "flex", justifyContent: "space-evenly" }}
+            >
+              <Tiles
+                onSubmit={makeChampionHandler}
+                key={i}
+                data={el}
+                onClickTiles={onClickTiles}
+              />
+            </Grid>
+          ))}
+          <DialogComponent
+            open={openDialog}
+            data={dialogData}
+            close={closeDialog}
+          />
+        </>
+      )}
     </Grid>
   );
 };

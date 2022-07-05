@@ -4,7 +4,6 @@ import { useStyles } from "./style";
 import moment from "moment";
 
 const DialogComponent = ({ data = {}, close, ...props }) => {
-  console.log(data);
   const classes = useStyles();
   const demo =
     " asdfasdfadfadfahhghgjhhguiuiuiiii999asdfsadfasdfasdfhksfsdfdsfasdfasdfadfadfahhghgjhhguiuiuiiii999asdfsadfasdfasdfhksfasdfasdf0-";
@@ -18,47 +17,47 @@ const DialogComponent = ({ data = {}, close, ...props }) => {
               {data?.name}
             </Typography>
           </Grid>
-          <Grid xs={12} item>
-            <Typography>Voted For : {data?.votedFor}</Typography>
-          </Grid>
+
           <Grid xs={12} item>
             <Typography>
-              Voted On : {moment(data?.date).format("DD-MM-YYYY")}
+              Voted On : {moment(data?.champion_date).format("DD-MM-YYYY")}
             </Typography>
           </Grid>
           <Grid xs={12} item style={{ marginBottom: 10 }}>
-            <Typography>Reason: </Typography>
+            <Typography>Comments: </Typography>
           </Grid>
 
-          <Grid item xs={12} style={{ marginBottom: 10 }}>
-            <Paper
-              variant="outlined"
-              style={{
-                width: "100%",
-                padding: "0 5px",
-                boxSizing: "border-box",
+          {data?.comments?.map((el, i) => (
+            <Grid item xs={12} style={{ marginBottom: 10 }} key={i}>
+              <Paper
+                variant="outlined"
+                style={{
+                  width: "100%",
+                  padding: "0 5px",
+                  boxSizing: "border-box",
 
-                backgroundColor: "#e6e6e6",
-              }}
-            >
-              <Grid item xs={12}>
-                <div>
-                  <Typography
-                    noWrap
-                    style={{
-                      display: "-webkit-box",
-                      overflow: "hidden",
-                      WebkitBoxOrient: "vertical",
-                      WebkitLineClamp: 3,
-                    }}
-                    variant="body1"
-                  >
-                    {data?.reason}
-                  </Typography>
-                </div>
-              </Grid>
-            </Paper>
-          </Grid>
+                  backgroundColor: "#e6e6e6",
+                }}
+              >
+                <Grid item xs={12}>
+                  <div>
+                    <Typography
+                      style={{
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        WebkitBoxOrient: "vertical",
+                        wordBreak: "break-word",
+                        WebkitLineClamp: 3,
+                      }}
+                      variant="body1"
+                    >
+                      {el?.comment}
+                    </Typography>
+                  </div>
+                </Grid>
+              </Paper>
+            </Grid>
+          ))}
         </Grid>
       </DialogTitle>
     </Dialog>

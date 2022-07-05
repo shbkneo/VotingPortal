@@ -16,9 +16,9 @@ const AdminComponent = () => {
 
   const menu = useMemo(
     () => [
-      { name: "Show Poll Results", route: "/results" },
-      { name: "Show Candidates", route: "/candidates" },
-      { name: "Show Users", route: "/users" },
+      { name: "Show Poll Results", route: "/admin-panel/poll-results" },
+      { name: "Show Candidates", route: "admin-panel/my-teams" },
+      { name: "Show Users", route: "admin-panel/users" },
     ],
     []
   );
