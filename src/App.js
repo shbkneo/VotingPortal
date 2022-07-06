@@ -93,13 +93,13 @@ const App = () => {
               <Candidates />
             </Route>
           )}
-          {/* {!login && (
+          {!login && (
             <Route exact path={"/register"}>
               <Suspense fallback={<div>loading task management</div>}>
                 <RegisterComponent />
               </Suspense>
             </Route>
-          )} */}
+          )}
         </Switch>
       ) : null}
     </LayoutComponent>

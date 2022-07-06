@@ -27,7 +27,7 @@ import { Edit } from "@mui/icons-material";
 import { async } from "@firebase/util";
 import AddNewMember from "./AddNewMember";
 import moment from "moment";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
 import { Images } from "../../utils/Images";
 import { useSelector } from "react-redux";
 
@@ -195,7 +195,7 @@ const Candidates = () => {
     } else if (modalType === "Update") {
       editMemberHandler(id);
     } else if (modalType === "Remove") {
-      removeMemberHandler();
+      removeMemberHandler(id);
     }
   };
   return (

@@ -21,7 +21,7 @@ import {
   firebaseDB,
   firebaseStorage,
 } from "../../services/firebase/FirebaseConfig";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 import SnackBarComponent from "../../common/SnackBarComponent";
 
 const RegisterComponent = () => {
@@ -34,8 +34,8 @@ const RegisterComponent = () => {
   const [signUpData, setSignUpData] = useState({
     email: "",
     password: "",
-    phone: "",
     name: "",
+    team_name: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState({
@@ -79,18 +79,39 @@ const RegisterComponent = () => {
       );
       user = userCredential?.user;
 
-      const docRef = await setDoc(doc(firebaseDB, "users", user?.uid), {
+      const teamDataBaseRef = collection(firebaseDB, "teams");
+
+      const docs = await doc(teamDataBaseRef);
+      const docRef = await setDoc(docs, {
+        team_id: docs.id,
+        id: docs.id,
+        team_name: signUpData.team_name,
+        team_lead: signUpData.name,
+        email: signUpData.email,
+        admin: signUpData.name,
+        user_id: user?.uid,
+      });
+
+      const memberDocRef = await setDoc(doc(firebaseDB, "members", user?.uid), {
         email: signUpData.email,
 
         phone: signUpData.phone || "",
         name: signUpData.name,
-        admin: false,
+        admin: true,
 
         uid: user?.uid,
         id: user?.uid,
+        experience: signUpData.experience || "",
+        doj: signUpData.doj || "",
+        emp_code: signUpData.emp_code || "",
+        office_location: signUpData.office_location || "",
+        team_id: docs.id,
+        team_name: signUpData.team_name,
+        team_lead: signUpData.name,
       });
       history.push("/login");
     } catch (error) {
+      console.log(error.message);
       setAlertMessage(error.code || error.message);
       setOpen(true);
     }
@@ -107,7 +128,7 @@ const RegisterComponent = () => {
       <Paper className={classes.loginPaper} elevation={4}>
         <Grid container>
           <Grid item xs={12}>
-            <p className={classes.loginHeading}>Sign Up</p>
+            <p className={classes.loginHeading}>Make Your Team</p>
           </Grid>
           <Grid item container xs={12} spacing={2}>
             <Grid item xs={12}>
@@ -139,6 +160,22 @@ const RegisterComponent = () => {
               value={signUpData.email}
               onChange={onEmailChangeHandler}
               helperText={error.email ? "Please enter a valid email" : null}
+            ></TextField>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              className={classes.textFields}
+              label="Team Name"
+              fullWidth
+              size="small"
+              value={signUpData.team_name}
+              onChange={(e) =>
+                setSignUpData({
+                  ...signUpData,
+                  team_name: e.target.value,
+                })
+              }
             ></TextField>
           </Grid>
 
@@ -179,6 +216,7 @@ const RegisterComponent = () => {
               {!signUpData.name ||
               !signUpData.password ||
               !signUpData.email ||
+              !signUpData.team_name ||
               error.password ||
               error.confirm ||
               error.email ? (
