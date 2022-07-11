@@ -170,9 +170,7 @@ const LoginComponent = () => {
           <Grid item xs={12}>
             <p className={classes.signupText}>
               Create an admin account?&nbsp;
-              <span
-              // onClick={() => history.push("/register")}
-              >
+              <span onClick={() => history.push("/register")}>
                 Sign up here
               </span>
             </p>

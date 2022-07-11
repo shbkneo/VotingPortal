@@ -16,13 +16,15 @@ const Tiles = ({ data = {}, onClickTiles, onSubmit }) => {
         >
           View Details
         </Typography>
-        <Button
-          style={{ textTransform: "none" }}
-          onClick={() => onSubmit(data)}
-          variant="outlined"
-        >
-          Make Winner
-        </Button>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            style={{ textTransform: "none" }}
+            onClick={() => onSubmit(data)}
+            variant="outlined"
+          >
+            Make Winner
+          </Button>
+        </div>
       </Paper>
     </div>
   );

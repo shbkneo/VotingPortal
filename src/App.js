@@ -17,6 +17,7 @@ import Results from "./components/admin/Results";
 import UsersComponent from "./components/admin/Users";
 import Candidates from "./components/admin/Candidates";
 import ForgotPassword from "./components/login/ForgotPassword";
+import { getAuth } from "firebase/auth";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -42,7 +43,7 @@ const App = () => {
       dispatch(actions.retrieveAppState());
     }
   };
-
+  console.log(getAuth().currentUser);
   return (
     <LayoutComponent>
       {retrieved ? (

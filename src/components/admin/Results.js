@@ -1,5 +1,13 @@
 import { Grid, Typography } from "@mui/material";
-import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import Tiles from "./Tiles";
 import { firebaseDB } from "../../services/firebase/FirebaseConfig";
@@ -92,8 +100,25 @@ const Results = () => {
     setOpenDialog(false);
   };
   const makeChampionHandler = async (data) => {
-    const championsDBRef = collection(firebaseDB, "champions");
     try {
+      let champions = [];
+
+      const championsDBRef = collection(firebaseDB, "champions");
+      const q = query(championsDBRef, where("team_id", "==", userData.team_id));
+      const userQuerySnapshot = await getDocs(q);
+      userQuerySnapshot.forEach((doc) => {
+        champions.push(doc.data());
+      });
+      champions = champions.filter(
+        (el, i) =>
+          moment(el?.champion_date).format("DD-MM-YY") ===
+          moment(new Date()).format("DD-MM-YY")
+      );
+
+      if (champions.length > 0) {
+        await deleteDoc(doc(firebaseDB, "champions", champions[0]?.id));
+      }
+
       const docs = await doc(championsDBRef);
       const docRef = await setDoc(docs, {
         ...data,
@@ -152,6 +177,7 @@ const Results = () => {
               style={{ display: "flex", justifyContent: "space-evenly" }}
             >
               <Tiles
+                champion={1}
                 onSubmit={makeChampionHandler}
                 key={i}
                 data={el}
