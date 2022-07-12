@@ -25,6 +25,7 @@ const Results = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogData, setDialogData] = useState({});
   const [fridayDate, setFridayDate] = useState();
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
     loadResults();
@@ -129,7 +130,7 @@ const Results = () => {
       console.log(error);
     }
   };
-
+  // console.log(11, moment().day(-16).format("DD-YY-MM DDdd"));
   return (
     <Grid container>
       {!userData?.admin ? (

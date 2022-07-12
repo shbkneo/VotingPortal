@@ -54,7 +54,7 @@ const AddNewMember = ({
                   label="Email"
                 ></TextField>
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                   <KeyboardDatePicker
                     placeholder="2018/10/10"
@@ -65,7 +65,7 @@ const AddNewMember = ({
                     fullWidth
                   />
                 </MuiPickersUtilsProvider>
-              </Grid>
+              </Grid> */}
               <Grid item xs={12}>
                 <TextField
                   size="small"

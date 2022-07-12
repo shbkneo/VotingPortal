@@ -7,15 +7,19 @@ import medal from "../assets/images/medal.png";
 import trophy from "../assets/images/trophy.png";
 import badge from "../assets/images/badge.png";
 import nodata from "../assets/images/nodata.png";
+import bgGrey from "../assets/images/bgGrey.png";
 export const Images = {
   logo: " https://emp.neosofttech.com/assets/a9ba8aa/assets/images/new-neosoft-logo.svg",
   denied,
-  dashboard,
-  vote,
-  admin,
+  dashboard:
+    "https://emp.neosofttech.com/assets/a9ba8aa/assets/images/left-menus/Dashboard.svg",
+  vote: "https://emp.neosofttech.com/assets/a9ba8aa/assets/images/left-menus/request.svg",
+  admin:
+    "https://emp.neosofttech.com/assets/a9ba8aa/assets/images/left-menus/WorkFromHome.svg",
   badge,
   logout,
   nodata,
+  bgGrey,
   medal,
   trophy,
   reports:

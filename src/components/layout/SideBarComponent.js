@@ -17,6 +17,8 @@ import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../store/actions";
 import CircleIcon from "@mui/icons-material/Circle";
 import { Box } from "@mui/system";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChartLine, faCheckToSlot } from "@fortawesome/free-solid-svg-icons";
 
 const SideBarComponent = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -77,7 +79,12 @@ const SideBarComponent = () => {
             {navMenu.map((el, i) => (
               <MenuItem
                 key={i}
-                icon={<img alt="" src={el.icon}></img>}
+                icon={
+                  <img alt="" style={{ color: "blue" }} src={el.icon}></img>
+                }
+                // icon={
+                //   <FontAwesomeIcon icon={el.icon} style={{ color: "red" }} />
+                // }
                 onClick={() => {
                   let temp = navMenu.map((item, j) => {
                     return {

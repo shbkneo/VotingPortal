@@ -23,6 +23,7 @@ import {
 } from "../../services/firebase/FirebaseConfig";
 import { collection, doc, setDoc } from "firebase/firestore";
 import SnackBarComponent from "../../common/SnackBarComponent";
+import BackgroundContainer from "../layout/BackgroundContainer";
 
 const RegisterComponent = () => {
   //   const dispatch = useDispatch();
@@ -124,9 +125,9 @@ const RegisterComponent = () => {
     setOpen(false);
   };
   return (
-    <Container className={classes.loginContainer} maxWidth={"sm"} fixed>
-      <Paper className={classes.loginPaper} elevation={4}>
-        <Grid container>
+    <BackgroundContainer>
+      <Grid container>
+        <Grid item xs={7} container>
           <Grid item xs={12}>
             <p className={classes.loginHeading}>Make Your Team</p>
           </Grid>
@@ -210,7 +211,12 @@ const RegisterComponent = () => {
               }}
             />
           </Grid>
-
+          <Grid item xs={12}>
+            <p className={classes.signupText}>
+              Already have account?
+              <span onClick={() => history.push("/login")}>Login here</span>
+            </p>
+          </Grid>
           <Grid item xs={12}>
             <Box className={classes.loginButtonContainer}>
               {!signUpData.name ||
@@ -240,22 +246,16 @@ const RegisterComponent = () => {
               )}
             </Box>
           </Grid>
-
-          <Grid item xs={12}>
-            <p className={classes.signupText}>
-              Already have account?
-              <span onClick={() => history.push("/login")}>Login here</span>
-            </p>
-          </Grid>
         </Grid>
-      </Paper>
-      <SnackBarComponent
-        handleClose={handleCloseAlert}
-        open={open}
-        type="error"
-        message={alertMessage}
-      />
-    </Container>
+
+        <SnackBarComponent
+          handleClose={handleCloseAlert}
+          open={open}
+          type="error"
+          message={alertMessage}
+        />
+      </Grid>
+    </BackgroundContainer>
   );
 };
 

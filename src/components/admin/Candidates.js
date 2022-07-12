@@ -30,6 +30,7 @@ import moment from "moment";
 import { createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
 import { Images } from "../../utils/Images";
 import { useSelector } from "react-redux";
+import { Colors } from "../../utils/Colors";
 
 const Candidates = () => {
   const [candidates, setCandidates] = useState([]);
@@ -235,7 +236,7 @@ const Candidates = () => {
               </Typography>
               <Fab
                 size="small"
-                color="primary"
+                style={{ backgroundColor: Colors.red, color: "white" }}
                 aria-label="add"
                 onClick={() => {
                   setModalType("Add");
@@ -255,7 +256,7 @@ const Candidates = () => {
                   key={i}
                   xs={6}
                   sm={4}
-                  md={3}
+                  md={2}
                   style={{
                     display: "flex",
                     justifyContent: "space-evenly",
@@ -265,7 +266,7 @@ const Candidates = () => {
                 >
                   <div
                     style={{
-                      width: "80%",
+                      width: "90%",
                       // paddingTop: "80%",
                       // position: "relative",
 
@@ -284,20 +285,20 @@ const Candidates = () => {
                         width: "100%",
 
                         paddingTop: 10,
-                        paddingBottom: 5,
+
                         boxSizing: "border-box",
                       }}
                     >
-                      <Grid container>
-                        <Grid
+                      <Grid container style={{ position: "relative" }}>
+                        {/* <Grid
                           item
                           xs={12}
                           style={{
                             display: "flex",
-                            justifyContent: "space-between",
+                            justifyContent: "flex-end",
                           }}
-                        >
-                          <Box
+                        > */}
+                        {/* <Box
                             style={{
                               backgroundColor: "#e6e6e6",
                               padding: 2,
@@ -308,18 +309,20 @@ const Candidates = () => {
                             {el.doj
                               ? moment(el.doj).format("Do MMM, YYYY")
                               : "NA"}
-                          </Box>
-                          <Box
-                            style={{
-                              backgroundColor: "#e6e6e6",
-                              borderRadius: 10,
-                              padding: 2,
-                              fontSize: "0.8rem",
-                            }}
-                          >
-                            {el.experience || ""} yr
-                          </Box>
-                        </Grid>
+                          </Box> */}
+                        <Box
+                          style={{
+                            backgroundColor: "#e6e6e6",
+                            borderRadius: 10,
+                            padding: 2,
+                            fontSize: "0.8rem",
+                            position: "absolute",
+                            right: 0,
+                          }}
+                        >
+                          {el.experience || ""} yr
+                        </Box>
+                        {/* </Grid> */}
                         <Grid
                           item
                           xs={12}
@@ -351,7 +354,13 @@ const Candidates = () => {
                           xs={12}
                           style={{ display: "flex", justifyContent: "center" }}
                         >
-                          <Typography style={{ fontWeight: "bold" }}>
+                          <Typography
+                            noWrap
+                            style={{
+                              fontWeight: "bold",
+                              textAlign: "center",
+                            }}
+                          >
                             {el.name}
                           </Typography>
                         </Grid>
@@ -362,37 +371,37 @@ const Candidates = () => {
                         >
                           <Typography>{el.office_location}</Typography>
                         </Grid>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            marginTop: 5,
-                          }}
-                        >
-                          <Box>
-                            <Edit
-                              style={{ cursor: "pointer" }}
-                              color="success"
-                              onClick={() => {
-                                setModalData({ ...el });
-                                setMembersData({ ...el });
-                                setModalType("Update");
-                                setModalOpen(true);
-                              }}
-                            />
-                            <DeleteForeverIcon
-                              onClick={() => {
-                                setModalData({ ...el });
-                                setMembersData({ ...el });
-                                setModalType("Remove");
-                                setModalOpen(true);
-                              }}
-                              style={{ color: "#ff3300", cursor: "pointer" }}
-                            />
-                          </Box>
-                        </div>
+                        <Grid item xs={12}>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              marginTop: 5,
+                            }}
+                          >
+                            <Box>
+                              <Edit
+                                style={{ cursor: "pointer" }}
+                                color="success"
+                                onClick={() => {
+                                  setModalData({ ...el });
+                                  setMembersData({ ...el });
+                                  setModalType("Update");
+                                  setModalOpen(true);
+                                }}
+                              />
+                              <DeleteForeverIcon
+                                onClick={() => {
+                                  setModalData({ ...el });
+                                  setMembersData({ ...el });
+                                  setModalType("Remove");
+                                  setModalOpen(true);
+                                }}
+                                style={{ color: "#ff3300", cursor: "pointer" }}
+                              />
+                            </Box>
+                          </div>
+                        </Grid>
                       </Grid>
                     </Paper>
                   </div>

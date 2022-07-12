@@ -22,6 +22,10 @@ import SnackBarComponent from "../../common/SnackBarComponent";
 import { useDispatch } from "react-redux";
 import * as actions from "../../store/actions";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import LoginBG from "../../assets/svgs/LoginBG";
+import BgGrey from "../../assets/svgs/BgGrey";
+import { Images } from "../../utils/Images";
+import BackgroundContainer from "../layout/BackgroundContainer";
 
 const LoginComponent = () => {
   const classes = useStyles();
@@ -87,13 +91,19 @@ const LoginComponent = () => {
     setOpen(false);
   };
   return (
-    <Container className={classes.loginContainer} maxWidth="sm" fixed>
-      <Paper className={classes.loginPaper} elevation={4}>
-        <Grid container>
+    <BackgroundContainer>
+      <Grid container>
+        <Grid item xs={7} container>
           <Grid item xs={12}>
-            <p className={classes.loginHeading}>Login</p>
+            <Typography className={classes.loginHeading}>LOGIN</Typography>
           </Grid>
           <Grid item xs={12}>
+            <Typography style={{ margin: "10px 0px 20px 0px" }}>
+              Enter your details to login your account
+            </Typography>
+          </Grid>
+
+          <Grid item xs={11}>
             <TextField
               required
               className={classes.textFields}
@@ -105,7 +115,7 @@ const LoginComponent = () => {
               onChange={onEmailChangeHandler}
             ></TextField>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={11}>
             <TextField
               id="outlined-adornment-password"
               type={showPassword ? "text" : "password"}
@@ -114,6 +124,7 @@ const LoginComponent = () => {
               required
               label="password"
               size="small"
+              className={classes.textFields}
               fullWidth
               InputProps={{
                 endAdornment: (
@@ -131,10 +142,9 @@ const LoginComponent = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={11}>
             <Typography
               style={{
-                textAlign: "right",
                 textDecoration: "underline",
                 opacity: 0.8,
               }}
@@ -143,7 +153,16 @@ const LoginComponent = () => {
               Forgot Password ?
             </Typography>
           </Grid>
+
           <Grid item xs={12}>
+            <p className={classes.signupText}>
+              Create an admin account?&nbsp;
+              <span onClick={() => history.push("/register")}>
+                Sign up here
+              </span>
+            </p>
+          </Grid>
+          <Grid item xs={11}>
             <Box className={classes.loginButtonContainer}>
               {!email || !password || error.email || error.password ? (
                 <Button
@@ -166,24 +185,16 @@ const LoginComponent = () => {
               )}
             </Box>
           </Grid>
-
-          <Grid item xs={12}>
-            <p className={classes.signupText}>
-              Create an admin account?&nbsp;
-              <span onClick={() => history.push("/register")}>
-                Sign up here
-              </span>
-            </p>
-          </Grid>
         </Grid>
-      </Paper>
+      </Grid>
+
       <SnackBarComponent
         handleClose={handleCloseAlert}
         open={open}
         type="error"
         message={alertMessage}
       />
-    </Container>
+    </BackgroundContainer>
   );
 };
 
