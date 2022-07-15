@@ -290,26 +290,6 @@ const Candidates = () => {
                       }}
                     >
                       <Grid container style={{ position: "relative" }}>
-                        {/* <Grid
-                          item
-                          xs={12}
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          }}
-                        > */}
-                        {/* <Box
-                            style={{
-                              backgroundColor: "#e6e6e6",
-                              padding: 2,
-                              fontSize: "0.8rem",
-                            }}
-                          >
-                            Doj:&nbsp;
-                            {el.doj
-                              ? moment(el.doj).format("Do MMM, YYYY")
-                              : "NA"}
-                          </Box> */}
                         <Box
                           style={{
                             backgroundColor: "#e6e6e6",
@@ -322,7 +302,7 @@ const Candidates = () => {
                         >
                           {el.experience || ""} yr
                         </Box>
-                        {/* </Grid> */}
+
                         <Grid
                           item
                           xs={12}

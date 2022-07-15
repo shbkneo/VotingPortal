@@ -5,6 +5,7 @@ import moment from "moment";
 import InfoIcon from "@mui/icons-material/Info";
 import { Images } from "../../utils/Images";
 import { Info } from "@mui/icons-material";
+import { Colors } from "../../utils/Colors";
 
 const Tiles = ({ data = {}, onClickTiles }) => {
   const classes = useStyles();
@@ -91,7 +92,7 @@ const Tiles = ({ data = {}, onClickTiles }) => {
           >
             <Info
               onClick={() => onClickTiles(data)}
-              style={{ color: "blue", cursor: "pointer" }}
+              style={{ color: Colors.green, cursor: "pointer" }}
             />
             {/* <Typography
               onClick={() => onClickTiles(data)}

@@ -1,4 +1,5 @@
 import { makeStyles } from "@mui/styles";
+import { Colors } from "../../utils/Colors";
 
 const useStyles = makeStyles((theme) => ({
   loginContainer: {
@@ -34,22 +35,26 @@ const useStyles = makeStyles((theme) => ({
   },
 
   loginButton: {
-    backgroundColor: "#fb641b !important",
-    width: "70% !important",
-    height: "50px !important",
+    backgroundColor: ` ${Colors.red} !important`,
+    width: "30% !important",
+    height: "40px !important",
     margin: "20px 0px !important",
+    borderRadius: "20px !important",
   },
   loginButtonDisabled: {
-    width: "70% !important",
-    height: "50px !important",
+    width: "30% !important",
+    height: "40px !important",
     margin: "20px 0px !important",
+    borderRadius: "20px !important",
   },
   loginButtonContainer: {
     display: " flex",
     justifyContent: " center",
   },
   loginPaper: {
-    borderRadius: 0,
+    borderRadius: "10px !important",
+    border: "1px solid #cccccc7a",
+
     padding: " 10px 15px 20px",
   },
 }));

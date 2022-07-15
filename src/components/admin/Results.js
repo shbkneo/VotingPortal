@@ -1,4 +1,11 @@
-import { Grid, Typography } from "@mui/material";
+import {
+  FormControl,
+  Grid,
+  InputLabel,
+  Select,
+  Typography,
+  MenuItem,
+} from "@mui/material";
 import {
   collection,
   deleteDoc,
@@ -16,6 +23,7 @@ import { useStyles } from "./style";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { Images } from "../../utils/Images";
+import ModalComponent from "../voting/ModalComponent";
 
 const Results = () => {
   const classes = useStyles();
@@ -24,57 +32,41 @@ const Results = () => {
   const [candidates, setCandidates] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogData, setDialogData] = useState({});
-  const [fridayDate, setFridayDate] = useState();
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
+  // const [fridayDate, setFridayDate] = useState();
+  const [pollResults, setPollResults] = useState([]);
+  const [allMembers, setAllMembers] = useState([]);
+  const [dateRange, setDateRange] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectChampionDialog, setSelectChampionDialog] = useState(false);
+  const [selectChampionDialogData, setSelectChampionDialogData] = useState({});
+  const [openModal, setOpenModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalError, setModalError] = useState(false);
   useEffect(() => {
     loadResults();
   }, []);
-  const loadResults = async () => {
-    const t = new Date().getDate() + (6 - new Date().getDay() - 1) - 7;
-    const lastFriday = new Date();
-    lastFriday.setDate(t);
+  useEffect(() => {
+    updateMembersList();
+  }, [selectedDate]);
 
-    let allCandidateNames = [];
-    const candidatesDBref = collection(firebaseDB, "members");
-    const userQuerySnapshotx = await getDocs(candidatesDBref);
-    userQuerySnapshotx.forEach((doc) => {
-      allCandidateNames.push(doc.data());
+  const handleChange = (event) => {
+    setSelectedDate(event.target.value);
+  };
+  const closeModalHandler = () => {
+    updateMembersList();
+    setOpenModal(false);
+    setSelectChampionDialog(false);
+    setSelectChampionDialogData({});
+  };
+
+  const updateMembersList = async () => {
+    let results = pollResults.filter((el, i) => {
+      return moment(el.date).format("DD-MM-YYYY") === selectedDate;
     });
-    allCandidateNames = allCandidateNames.filter(
-      (el, i) => el.team_id === userData?.team_id && el.admin == false
-    );
-    let results = [];
-    const resultDBref = collection(firebaseDB, "results");
-    const userQuerySnapshot = await getDocs(resultDBref);
-    userQuerySnapshot.forEach((doc) => {
-      results.push(doc.data());
-    });
-
-    //if today is Friday, result will contain filtered array containing elements of today's Date only
-    // otherwise it will contain elements filtered as per last friday date
-
-    if (moment(new Date()).format("dddd") === "Friday") {
-      results = results.filter((el, i) => {
-        return (
-          moment(el.date).format("DD-MM-YYYY") ===
-          moment(new Date()).format("DD-MM-YYYY")
-        );
-      });
-      setFridayDate(moment(new Date()).format("DD-MM-YYYY"));
-    } else {
-      results = results.filter((el, i) => {
-        return (
-          moment(el.date).format("DD-MM-YYYY") ===
-          moment(lastFriday).format("DD-MM-YYYY")
-        );
-      });
-      setFridayDate(moment(lastFriday).format("DD-MM-YYYY"));
-    }
-    let temp = allCandidateNames.map((el, i) => {
+    let temp = allMembers.map((el, i) => {
       return { ...el, count: 0, comments: [] };
     });
-    for (let i of allCandidateNames) {
+    for (let i of allMembers) {
       for (let j in results) {
         if (i?.name === results[j].votedFor) {
           const indexOfCandidate = temp.findIndex((el) => el.name === i.name);
@@ -90,7 +82,60 @@ const Results = () => {
         }
       }
     }
-    setCandidates(temp.slice().sort((a, b) => b.count - a.count));
+
+    let champions = [];
+
+    const championsDBRef = collection(firebaseDB, "champions");
+    const q = query(championsDBRef, where("team_id", "==", userData.team_id));
+    const userQuerySnapshotChampions = await getDocs(q);
+    userQuerySnapshotChampions.forEach((doc) => {
+      champions.push(doc.data());
+    });
+    champions = champions.filter((el, i) => {
+      return moment(el?.champion_date).format("DD-MM-YYYY") == selectedDate;
+    });
+
+    let temp2 = temp.map((el, i) => {
+      return { ...el, champion: el.uid == champions?.[0]?.uid };
+    });
+
+    setCandidates(temp2.slice().sort((a, b) => b.count - a.count));
+  };
+
+  const loadResults = async () => {
+    let allCandidateNames = [];
+    const membersDBref = collection(firebaseDB, "members");
+    const membersQueue = query(
+      membersDBref,
+      where("team_id", "==", userData.team_id)
+    );
+    const userQuerySnapshotx = await getDocs(membersQueue);
+    userQuerySnapshotx.forEach((doc) => {
+      allCandidateNames.push(doc.data());
+    });
+    allCandidateNames = allCandidateNames.filter(
+      (el, i) => el.team_id === userData?.team_id && el.admin == false
+    );
+    let results = [];
+    const resultDBref = collection(firebaseDB, "results");
+    const resultsQue = query(
+      resultDBref,
+      where("team_id", "==", userData.team_id)
+    );
+
+    const userQuerySnapshot = await getDocs(resultsQue);
+    userQuerySnapshot.forEach((doc) => {
+      results.push(doc.data());
+    });
+
+    setDateRange(results.map((el, i) => moment(el.date).format("DD-MM-YYYY")));
+
+    setSelectedDate(
+      moment.max(results.map((el, i) => moment(el.date))).format("DD-MM-YYYY")
+    );
+
+    setPollResults(results);
+    setAllMembers(allCandidateNames);
   };
   const onClickTiles = (data) => {
     setDialogData(data);
@@ -99,6 +144,14 @@ const Results = () => {
   const closeDialog = () => {
     setDialogData({});
     setOpenDialog(false);
+  };
+  const openSelectChampionDialog = (data) => {
+    setSelectChampionDialogData(data);
+    setSelectChampionDialog(true);
+  };
+  const closeChampionDialog = () => {
+    setSelectChampionDialogData({});
+    setSelectChampionDialog(false);
   };
   const makeChampionHandler = async (data) => {
     try {
@@ -126,11 +179,17 @@ const Results = () => {
         id: docs.id,
         champion_date: moment(new Date()).format(),
       });
+      setModalMessage("Done");
+      setModalError(false);
+      setOpenModal(true);
     } catch (error) {
+      setModalMessage("Something went Wrong!");
+      setModalError(true);
+      // alert("something went wrong. Please try again later");
+      setOpenModal(true);
       console.log(error);
     }
   };
-  // console.log(11, moment().day(-16).format("DD-YY-MM DDdd"));
   return (
     <Grid container>
       {!userData?.admin ? (
@@ -153,43 +212,89 @@ const Results = () => {
         </Grid>
       ) : (
         <>
-          <Grid item xs={12}>
-            <Typography className={classes.titleHeading}>
-              Poll Results
-            </Typography>
-            <Typography
-              align="center"
-              marginTop={"-15px"}
-              marginBottom={"25px"}
-            >
-              {moment(new Date()).format("dddd") === "Friday"
-                ? "(Today)"
-                : "(Last Friday)"}
-              {fridayDate}
-            </Typography>
-          </Grid>
-          {candidates.map((el, i) => (
-            <Grid
-              item
-              key={i}
-              xs={6}
-              sm={4}
-              md={3}
-              style={{ display: "flex", justifyContent: "space-evenly" }}
-            >
-              <Tiles
-                champion={1}
-                onSubmit={makeChampionHandler}
-                key={i}
-                data={el}
-                onClickTiles={onClickTiles}
-              />
+          <Grid item container xs={12}>
+            <Grid container item xs={12} style={{ alignItems: "center" }}>
+              <Grid item xs={12} sm={6}>
+                <div style={{ paddingLeft: 10 }}>
+                  <Typography className={classes.titleHeading}>
+                    Poll Results
+                  </Typography>
+                </div>
+              </Grid>
+              <Grid item xs={12} sm={6} className={classes.justifyRight}>
+                <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                  <InputLabel id="demo-select-small">Date</InputLabel>
+                  <Select
+                    style={{ backgroundColor: "white" }}
+                    labelId="demo-select-small"
+                    id="demo-select-small"
+                    value={selectedDate}
+                    label="Date"
+                    onChange={handleChange}
+                  >
+                    {dateRange.map((el, i) => (
+                      <MenuItem key={i} value={el}>
+                        {el}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
             </Grid>
-          ))}
+          </Grid>
+          <Grid item xs={12} style={{ padding: "0px 10px" }}>
+            <Grid container>
+              {candidates.map((el, i) => (
+                <Grid
+                  item
+                  key={i}
+                  xs={6}
+                  sm={4}
+                  md={2}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-evenly",
+                    marginBottom: 15,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "90%",
+
+                      overflow: "hidden",
+                    }}
+                  >
+                    <Tiles
+                      date={selectedDate}
+                      champion={1}
+                      // onSubmit={makeChampionHandler}
+                      onSubmit={openSelectChampionDialog}
+                      key={i}
+                      data={el}
+                      onClickTiles={onClickTiles}
+                    />
+                  </div>
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+          <DialogComponent
+            select
+            open={selectChampionDialog}
+            data={selectChampionDialogData}
+            close={closeChampionDialog}
+            onSubmit={makeChampionHandler}
+          />
           <DialogComponent
             open={openDialog}
             data={dialogData}
             close={closeDialog}
+          />
+          <ModalComponent
+            open={openModal}
+            onClose={closeModalHandler}
+            error={modalError}
+            message={modalMessage}
           />
         </>
       )}

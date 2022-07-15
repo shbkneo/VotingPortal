@@ -41,8 +41,18 @@ const Dashboard = () => {
   return (
     <Grid container>
       <Grid item xs={12}>
-        <p className={classes.titleHeading}>Champions</p>
+        <div style={{ paddingLeft: 10 }}>
+          <Typography style={{ textAlign: "start", fontSize: "1.3rem" }}>
+            Champions
+          </Typography>
+        </div>
       </Grid>
+      <Grid item xs={12}>
+        <div style={{ paddingLeft: 10, margin: "2px 0 30px 0" }}>
+          <Typography>{userData?.team_name}</Typography>
+        </div>
+      </Grid>
+
       {championsList.length > 0 ? null : (
         <>
           <Grid

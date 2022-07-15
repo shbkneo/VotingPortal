@@ -106,7 +106,7 @@ const VotingComponent = () => {
 
   return (
     <Container className={classes.loginContainer} maxWidth="sm" fixed>
-      <Paper className={classes.loginPaper} elevation={1}>
+      <Paper className={classes.loginPaper} elevation={0}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <p className={classes.loginHeading}>Lets Vote</p>

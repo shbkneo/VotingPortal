@@ -3,9 +3,9 @@ import { makeStyles } from "@mui/styles";
 export const useStyles = makeStyles(() => {
   return {
     titleHeading: {
-      fontSize: "1.5rem !important",
-      textAlign: "center",
-      fontWeight: "bolder !important",
+      fontSize: "1.3rem !important",
+      textAlign: "start",
+
       margin: "10px 0 25px 0 !important",
     },
     commentBox: {
@@ -32,11 +32,16 @@ export const useStyles = makeStyles(() => {
     },
 
     detailsText: {
-      color: "#1976d2",
+      color: "#01726f",
       cursor: "pointer",
+      textAlign: "center",
     },
     emailText: {
       wordBreak: "break-word",
+    },
+    justifyRight: {
+      display: "flex",
+      justifyContent: "right",
     },
   };
 });
