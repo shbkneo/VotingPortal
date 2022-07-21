@@ -8,7 +8,7 @@ import LayoutComponent from "./components/layout/LayoutComponent";
 import LoginComponent from "./components/login/LoginComponent";
 import RegisterComponent from "./components/register/RegisterComponent";
 import DashboardComponent from "./components/dashboard/Dashboard";
-import { firebaseDB } from "./services/firebase/FirebaseConfig";
+import { auth, firebaseDB } from "./services/firebase/FirebaseConfig";
 import * as actions from "./store/actions";
 import { Button } from "@mui/material";
 import VotingComponent from "./components/voting/VotingComponent";
@@ -17,7 +17,8 @@ import Results from "./components/admin/Results";
 import UsersComponent from "./components/admin/Users";
 import Candidates from "./components/admin/Candidates";
 import ForgotPassword from "./components/login/ForgotPassword";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { async } from "@firebase/util";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -27,23 +28,41 @@ const App = () => {
     retrievingAppState();
   }, []);
   const retrievingAppState = async () => {
-    const token = localStorage.getItem("token");
-    const userid = localStorage.getItem("userid");
-    if (token) {
-      let user;
-      const userDbRef = collection(firebaseDB, "members");
-      const q = query(userDbRef, where("id", "==", userid));
-      const userQuerySnapshot = await getDocs(q);
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const uid = user.uid;
 
-      userQuerySnapshot.forEach((doc) => {
-        user = { ...doc.data() };
-      });
-      dispatch(actions.retrieveAppState(user));
-    } else {
-      dispatch(actions.retrieveAppState());
-    }
+        let userData;
+        const userDbRef = collection(firebaseDB, "members");
+        const q = query(userDbRef, where("id", "==", uid));
+        const userQuerySnapshot = await getDocs(q);
+
+        userQuerySnapshot.forEach((doc) => {
+          userData = { ...doc.data() };
+        });
+        dispatch(actions.retrieveAppState(userData));
+      } else {
+        console.log("no user");
+        dispatch(actions.retrieveAppState());
+      }
+    });
+    // const token = localStorage.getItem("token");
+    // const userid = localStorage.getItem("userid");
+    // if (token) {
+    //   let user;
+    //   const userDbRef = collection(firebaseDB, "members");
+    //   const q = query(userDbRef, where("id", "==", userid));
+    //   const userQuerySnapshot = await getDocs(q);
+
+    //   userQuerySnapshot.forEach((doc) => {
+    //     user = { ...doc.data() };
+    //   });
+    //   dispatch(actions.retrieveAppState(user));
+    // } else {
+    //   dispatch(actions.retrieveAppState());
+    // }
   };
-  console.log(getAuth().currentUser);
+
   return (
     <LayoutComponent>
       {retrieved ? (

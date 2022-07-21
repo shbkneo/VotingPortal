@@ -15,6 +15,7 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../store/actions";
 import { Images } from "../utils/Images";
+import { auth } from "../services/firebase/FirebaseConfig";
 
 const pages = [
   { name: "Dashboard", path: "/dashboard" },
@@ -48,12 +49,15 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
   const handleLogout = () => {
-    dispatch(actions.logout());
-    localStorage.removeItem("token");
-    localStorage.removeItem("userid");
-    handleCloseUserMenu();
-
-    history.push("/");
+    auth
+      .signOut()
+      .then((a) => {
+        console.log("loggedout");
+        dispatch(actions.logout());
+        handleCloseUserMenu();
+        history.push("/");
+      })
+      .catch((er) => console.log(er));
   };
   const handleSettingsMenu = (name) => {
     if (name === "Logout") {

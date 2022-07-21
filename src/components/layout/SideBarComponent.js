@@ -19,6 +19,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 import { Box } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartLine, faCheckToSlot } from "@fortawesome/free-solid-svg-icons";
+import { auth } from "../../services/firebase/FirebaseConfig";
 
 const SideBarComponent = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -31,11 +32,17 @@ const SideBarComponent = () => {
     { name: "Let's Vote", route: "/voting", icon: Images.vote },
   ]);
   const handleLogout = () => {
-    dispatch(actions.logout());
-    localStorage.removeItem("token");
-    localStorage.removeItem("userid");
+    auth
+      .signOut()
+      .then((a) => {
+        console.log("loggedout");
+        dispatch(actions.logout());
+        history.push("/");
+      })
+      .catch((er) => console.log(er));
 
-    history.push("/");
+    // localStorage.removeItem("token");
+    // localStorage.removeItem("userid");
   };
   return (
     <div id="header" style={{ width: collapsed ? 80 : 220 }}>

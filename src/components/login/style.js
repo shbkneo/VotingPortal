@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
     backgroundColor: "white",
   },
+
   signupText: {
     fontWeight: 500,
 
@@ -54,7 +55,8 @@ const useStyles = makeStyles((theme) => ({
     padding: " 10px 15px 20px",
   },
   test: {
-    backgroundColor: "red !important",
+    backgroundColor: "white",
+    borderRadius: 90,
   },
 }));
 export { useStyles };

@@ -76,8 +76,8 @@ const LoginComponent = () => {
         loggedUser = { ...doc.data() };
       });
       dispatch(actions.loginSucces(loggedUser));
-      localStorage.setItem("token", user.accessToken);
-      localStorage.setItem("userid", user.uid);
+      // localStorage.setItem("token", user.accessToken);
+      // localStorage.setItem("userid", user.uid);
       history.push("/voting");
     } catch (error) {
       setAlertMessage(error.code || error.message);

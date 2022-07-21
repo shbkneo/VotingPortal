@@ -128,7 +128,17 @@ const Results = () => {
       results.push(doc.data());
     });
 
-    setDateRange(results.map((el, i) => moment(el.date).format("DD-MM-YYYY")));
+    setDateRange(
+      results
+        .map((el, i) => moment(el.date).format("DD-MM-YYYY"))
+        .slice()
+        .sort((a, b) => {
+          return (
+            moment(a, "DD.MM.YYYY").valueOf() -
+            moment(b, "DD.MM.YYYY").valueOf()
+          );
+        })
+    );
 
     setSelectedDate(
       moment.max(results.map((el, i) => moment(el.date))).format("DD-MM-YYYY")
