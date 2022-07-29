@@ -49,7 +49,10 @@ const VotingComponent = () => {
         return { ...el, date: moment(el.date).format() };
       });
       let findCurrentUserIndex = results.findIndex((el, i) => {
-        return userData?.uid === el.userId;
+        return (
+          userData?.uid === el.userId &&
+          moment(el.date).format("DD-MM-YYYY") === moment().format("DD-MM-YYYY")
+        );
       });
       // console.log(results, findCurrentUserIndex);
       if (findCurrentUserIndex === -1) {
