@@ -224,14 +224,14 @@ const Results = () => {
         <>
           <Grid item container xs={12}>
             <Grid container item xs={12} style={{ alignItems: "center" }}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <div style={{ paddingLeft: 10 }}>
                   <Typography className={classes.titleHeading}>
                     Poll Results
                   </Typography>
                 </div>
               </Grid>
-              <Grid item xs={12} sm={6} className={classes.justifyRight}>
+              <Grid item xs={12} style={{ marginTop: -10, marginBottom: 25 }}>
                 <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                   <InputLabel id="demo-select-small">Date</InputLabel>
                   <Select
